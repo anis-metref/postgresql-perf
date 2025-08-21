@@ -2,6 +2,14 @@ import streamlit as st
 import pandas as pd
 import psycopg2
 from psycopg2.extras import RealDictCursor
+
+# Optional plotting libs
+try:
+    import plotly.express as px
+    import plotly.graph_objects as go
+    PLOTLY_AVAILABLE = True
+except Exception:
+    PLOTLY_AVAILABLE = False
 from pathlib import Path
 import time
 import io
@@ -215,6 +223,44 @@ def truncate_tables(conn, tables: list[str]):
 # UI
 # -----------------------------
 st.set_page_config(page_title="SQL - Base de données (Étude des performances de PostgreSQL)", layout="wide")
+
+# Theme and CSS helpers for a compact, global dashboard view
+PALETTE = [
+    "#00b4d8", "#90e0ef", "#ffd60a", "#e85d04", "#6a4c93", "#2a9d8f",
+    "#ff6b6b", "#4cc9f0", "#f72585", "#b5179e"
+]
+
+def style_fig(fig, height: int = 260):
+    try:
+        fig.update_layout(
+            height=height,
+            template="plotly_white",
+            margin=dict(l=30, r=20, t=40, b=30),
+            paper_bgcolor="#ffffff",
+            plot_bgcolor="#ffffff",
+            font=dict(family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, \"Apple Color Emoji\", \"Segoe UI Emoji\"", size=12, color="#0f172a"),
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+        )
+        # Apply a consistent colorway
+        fig.update_layout(colorway=PALETTE)
+    except Exception:
+        pass
+    return fig
+
+# Base CSS (compact paddings)
+st.markdown(
+    """
+    <style>
+    .block-container {padding-top: 0.75rem; padding-bottom: 0.5rem;}
+    .element-container {margin-bottom: 0.5rem;}
+    .stTabs [data-baseweb="tab-list"] {gap: 8px;}
+    .stMetric {background: #0f172a10; color: #0f172a; padding: 10px 12px; border-radius: 8px; border: 1px solid #e2e8f0;}
+    .st-emotion-cache-1kyxreq {padding: 0.25rem 0.5rem;}
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 st.title("SQL - Base de données (Étude des performances de PostgreSQL)")
 
 st.sidebar.header("Connexion PostgreSQL")
@@ -225,6 +271,11 @@ def_conn = {
     "user": st.sidebar.text_input("Utilisateur", value="postgres"),
     "password": st.sidebar.text_input("Mot de passe", value="", type="password"),
 }
+
+# UI options
+view_compact = st.sidebar.checkbox("Vue globale compacte (sans scroll)", value=True,
+                                   help="Active une mise en page en grille et des graphiques compacts pour tenir sur un écran.")
+st.session_state["view_compact"] = view_compact
 
 if "conn" not in st.session_state:
     st.session_state.conn = None
@@ -284,59 +335,92 @@ Tab1, Tab2, Tab3, Tab4, Tab5 = st.tabs([
 ])
 
 with Tab1:
-    st.subheader("Tableau de bord et graphiques (avec/ sans index)")
+    st.subheader("Dashboard global")
     if not conn:
         st.info("Connectez-vous pour afficher les statistiques.")
     else:
-        # Outil de nettoyage de données chargées
-        st.markdown("Nettoyage des données chargées")
-        candidates = existing_tables_in(conn, "referentiels", ["adresse_postale", "etablissement", "unite_legale"])
-        if candidates:
-            counts = {t: count_table_safe(conn, t) for t in candidates}
-            st.write("Les tables suivantes seront vidées (TRUNCATE RESTART IDENTITY):")
-            st.json(counts)
-            if st.button("Vider ces tables"):
-                try:
-                    truncate_tables(conn, candidates)
-                    st.success("Tables vidées. Vous pouvez charger un autre .sql moyen/conséquent.")
-                except Exception as e:
-                    st.error(str(e))
-        else:
-            st.caption("Aucune table cible trouvée dans le schéma referentiels.")
-        # Statistiques de base
+        # Nettoyage: expander pour ne pas occuper la hauteur
+        with st.expander("Nettoyage des données chargées", expanded=not st.session_state.get("view_compact", True)):
+            candidates = existing_tables_in(conn, "referentiels", ["adresse_postale", "etablissement", "unite_legale"])
+            if candidates:
+                counts = {t: count_table_safe(conn, t) for t in candidates}
+                st.write("Les tables suivantes seront vidées (TRUNCATE RESTART IDENTITY):")
+                st.json(counts)
+                if st.button("Vider ces tables"):
+                    try:
+                        truncate_tables(conn, candidates)
+                        st.success("Tables vidées. Vous pouvez charger un autre .sql moyen/conséquent.")
+                    except Exception as e:
+                        st.error(str(e))
+            else:
+                st.caption("Aucune table cible trouvée dans le schéma referentiels.")
+
+        # Métriques clés
         def count_table(tbl):
             try:
                 df = query_df(conn, f"SELECT COUNT(*) AS nb FROM {tbl};")
                 return int(df["nb"].iloc[0])
             except Exception:
                 return None
-        col1, col2, col3 = st.columns(3)
+        mcol1, mcol2, mcol3 = st.columns(3)
         nb_addr = count_table("referentiels.adresse_postale")
         nb_eta = count_table("referentiels.etablissement")
         nb_ul = count_table("referentiels.unite_legale")
-        col1.metric("Adresses", nb_addr if nb_addr is not None else "-")
-        col2.metric("Établissements", nb_eta if nb_eta is not None else "-")
-        col3.metric("Unités légales", nb_ul if nb_ul is not None else "-")
+        mcol1.metric("Adresses", nb_addr if nb_addr is not None else "-")
+        mcol2.metric("Établissements", nb_eta if nb_eta is not None else "-")
+        mcol3.metric("Unités légales", nb_ul if nb_ul is not None else "-")
 
-        # Graphiques
-        for title, q in DEFAULT_QUERIES.items():
-            try:
-                df = query_df(conn, q)
-                if len(df) > 0:
-                    st.markdown(title)
-                    st.bar_chart(df.set_index(df.columns[0]))
-            except Exception as e:
-                st.warning(f"{title}: {e}")
+        # Row 1: Top 10/15
+        c1, c2, c3 = st.columns(3)
+        # Top 10 communes
+        try:
+            df_communes = query_df(conn, DEFAULT_QUERIES["Top 10 communes"]).rename(columns={"nom_commune":"lib", "nb":"val"})
+            if not df_communes.empty:
+                if PLOTLY_AVAILABLE:
+                    import plotly.express as px
+                    fig = px.bar(df_communes.sort_values("val"), x="val", y="lib", orientation="h", title="Top 10 communes")
+                    fig.update_yaxes(categoryorder="array", categoryarray=df_communes.sort_values("val")["lib"].tolist())
+                    c1.plotly_chart(style_fig(fig, height=260), use_container_width=True)
+                else:
+                    with c1:
+                        st.bar_chart(df_communes.set_index("lib"))
+        except Exception as e:
+            st.warning(f"Top 10 communes: {e}")
+        # Top 10 voies
+        try:
+            df_voies = query_df(conn, DEFAULT_QUERIES["Top 10 voies"]).rename(columns={"nom_voie":"lib", "nb":"val"})
+            if not df_voies.empty:
+                if PLOTLY_AVAILABLE:
+                    import plotly.express as px
+                    fig = px.bar(df_voies.sort_values("val"), x="val", y="lib", orientation="h", title="Top 10 voies")
+                    fig.update_yaxes(categoryorder="array", categoryarray=df_voies.sort_values("val")["lib"].tolist())
+                    c2.plotly_chart(style_fig(fig, height=260), use_container_width=True)
+                else:
+                    with c2:
+                        st.bar_chart(df_voies.set_index("lib"))
+        except Exception as e:
+            st.warning(f"Top 10 voies: {e}")
+        # Top 15 codes postaux
+        try:
+            df_cp = query_df(conn, DEFAULT_QUERIES["Top 15 codes postaux"]).rename(columns={"code_post":"lib", "nb":"val"})
+            if not df_cp.empty:
+                if PLOTLY_AVAILABLE:
+                    import plotly.express as px
+                    fig = px.bar(df_cp.sort_values("val"), x="lib", y="val", title="Top 15 codes postaux")
+                    c3.plotly_chart(style_fig(fig, height=260), use_container_width=True)
+                else:
+                    with c3:
+                        st.bar_chart(df_cp.set_index("lib"))
+        except Exception as e:
+            st.warning(f"Top 15 codes postaux: {e}")
 
-        # Comparatif avec/sans index pour 'rue des jacinthes'
+        # Row 2: comparatif avec/sans index + donut
         st.markdown("Comparatif: 'rue des jacinthes' (avec vs sans index)")
         q_jac = "SELECT nom_commune, code_post FROM referentiels.adresse_postale WHERE nom_voie = 'rue des jacinthes';"
-        # Mesure brute sans forcer planner (suppose qu'on mesure avant index puis après)
         try:
             d1 = measure_query_time(conn, q_jac)
         except Exception:
             d1 = None
-        # Tenter de créer l'index si non présent, puis remesurer
         try:
             create_index_if_not_exists(conn, "CREATE INDEX IF NOT EXISTS idx_adresse_nom_voie ON referentiels.adresse_postale (nom_voie);")
             d2 = measure_query_time(conn, q_jac)
@@ -347,42 +431,51 @@ with Tab1:
         if d2 is not None: data_comp.append({"version": "avec index", "ms": d2*1000})
         if data_comp:
             df_comp = pd.DataFrame(data_comp)
-            st.bar_chart(df_comp.set_index("version"))
-            # Camembert (pie) via plotly si dispo, sinon fallback bar (Streamlit n'a pas de pie natif)
-            try:
+            colL, colR = st.columns(2)
+            if PLOTLY_AVAILABLE:
                 import plotly.express as px
-                fig = px.pie(df_comp, values="ms", names="version", title="Gain index - 'rue des jacinthes'")
-                st.plotly_chart(fig, use_container_width=True)
-            except Exception:
-                pass
+                fig_bar = px.bar(df_comp, x="version", y="ms", color="version", title="Temps (ms)")
+                colL.plotly_chart(style_fig(fig_bar, height=260), use_container_width=True)
+                fig_pie = px.pie(df_comp, values="ms", names="version", hole=0.5, title="Répartition du temps")
+                colR.plotly_chart(style_fig(fig_pie, height=260), use_container_width=True)
+            else:
+                colL.bar_chart(df_comp.set_index("version"))
 
-        # Courbe de tendance (line chart) par code postal ordonné
-        try:
-            df_cp = query_df(conn, """
-                SELECT code_post, COUNT(*)::int AS nb
-                FROM referentiels.adresse_postale
-                GROUP BY code_post
-                ORDER BY code_post
-                LIMIT 100
-            """)
-            if not df_cp.empty:
-                st.line_chart(df_cp.set_index("code_post"))
-        except Exception:
-            pass
-
-        # Graphe de surface (aire) sur top communes
-        try:
-            df_top = query_df(conn, """
-                SELECT nom_commune, COUNT(*)::int AS nb
-                FROM referentiels.adresse_postale
-                GROUP BY nom_commune
-                ORDER BY nb DESC
-                LIMIT 20
-            """)
-            if not df_top.empty:
-                st.area_chart(df_top.set_index("nom_commune"))
-        except Exception:
-            pass
+        # Extras: tendances dans un expander si compact
+        if not st.session_state.get("view_compact", True):
+            with st.expander("Tendances supplémentaires", expanded=True):
+                try:
+                    df_cp2 = query_df(conn, """
+                        SELECT code_post, COUNT(*)::int AS nb
+                        FROM referentiels.adresse_postale
+                        GROUP BY code_post
+                        ORDER BY code_post
+                        LIMIT 100
+                    """)
+                    if not df_cp2.empty and PLOTLY_AVAILABLE:
+                        import plotly.express as px
+                        fig_line = px.line(df_cp2, x="code_post", y="nb", title="Distribution par code postal (limité)")
+                        st.plotly_chart(style_fig(fig_line, height=260), use_container_width=True)
+                    elif not df_cp2.empty:
+                        st.line_chart(df_cp2.set_index("code_post"))
+                except Exception:
+                    pass
+                try:
+                    df_top = query_df(conn, """
+                        SELECT nom_commune, COUNT(*)::int AS nb
+                        FROM referentiels.adresse_postale
+                        GROUP BY nom_commune
+                        ORDER BY nb DESC
+                        LIMIT 20
+                    """)
+                    if not df_top.empty and PLOTLY_AVAILABLE:
+                        import plotly.express as px
+                        fig_area = px.area(df_top, x="nom_commune", y="nb", title="Top communes (aire)")
+                        st.plotly_chart(style_fig(fig_area, height=260), use_container_width=True)
+                    elif not df_top.empty:
+                        st.area_chart(df_top.set_index("nom_commune"))
+                except Exception:
+                    pass
 
 with Tab2:
     st.subheader("Requêtes et index")
