@@ -55,10 +55,10 @@ Puis configurer la connexion postgresql dans la barre latérale de l'app.
 
 ## Jeux de données
 Scripts intégrés (barre latérale de l'app):
-- Structure minimale: projet/sql/bootstrap.sql
-- Données d'exemple: projet/sql/sample_data.sql
-- Données moyen volume (~50k): projet/sql/data_moyen.sql
-- Données conséquentes (~300k): projet/sql/data.sql
+- Structure minimale: /sql/bootstrap.sql
+- Données d'exemple: /sql/sample_data.sql
+- Données moyen volume (~50k): /sql/data_moyen.sql
+- Données conséquentes (~300k): /sql/data.sql
 - Vous pouvez aussi charger un script .sql personnalisé (uploader dans la barre latérale).
 
 Conseil:
