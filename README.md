@@ -35,11 +35,11 @@ chmod +x ./setup_env.sh
 sudo ./setup_env.sh
 ```
 2) Dans le menu:
-- 1) Installer PostgreSQL et créer cluster
-- 5) Créer la base tp3Perf
-- 6) Bootstrap SQL (structure minimale)
-- 7) Charger données d'exemple OU 8) Charger données conséquentes OU "Données moyen volume" depuis l'app
-- 12) Lancer l'application Streamlit
+- 1 ) Installer PostgreSQL et créer cluster
+- 5 ) Créer la base tp3Perf
+- 6 ) Bootstrap SQL (structure minimale)
+- 7 ) Charger données d'exemple OU 8) Charger données conséquentes OU "Données moyen volume" depuis l'app
+- 12 ) Lancer l'application Streamlit
 
 ## Lancer l'application (manuel)
 Sans passer par le script Bash:
