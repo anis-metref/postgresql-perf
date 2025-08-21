@@ -104,7 +104,7 @@ Onglet "Tableau de bord": section "Nettoyage des données":
     ```
 
 ## Structure du dépôt
-- projet/main.py: application Streamlit
-- projet/setup_env.sh: script d'installation/gestion avec menu
-- projet/sql/*.sql: scripts SQL intégrés (structure, données)
-- projet/requirements.txt: dépendances Python
+- main.py: application Streamlit
+- setup_env.sh: script d'installation/gestion avec menu
+- sql/*.sql: scripts SQL intégrés (structure, données)
+- requirements.txt: dépendances Python
