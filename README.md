@@ -11,11 +11,11 @@ Ce projet propose:
 - Tableau de bord: métriques et graphiques (barres, lignes, aires), comparatif avec/sans index.
 - Requêtes et index: exécution libre, création d'index utiles, mini-benchmarks avant/après index.
 - Charge (pgbench): exécution simple et campagnes multi-clients par profil (impact hardware/tuning), export CSV.
-- Monitoring: vues v_index_usage et v_table_stats (créées par le bootstrap) pour suivre l'utilisation des index et la taille des tables.
+- Monitoring: vues v_index_usage et v_table_stats pour suivre l'utilisation des index et la taille des tables.
 - Chargement de données: scripts intégrés pour structure minimale et jeux de données de différentes tailles.
 
 ## Prérequis
-- Linux (Debian/Ubuntu recommandés) avec sudo pour le script d'installation.
+- Linux (Debian/Ubuntu) avec sudo pour le script d'installation.
 - Python 3.9+, python3-pip, python3-venv, git
 - Postgresql (13, 15..)
 
