@@ -16,7 +16,7 @@ Ce projet propose:
 
 ## Prérequis
 - Linux (Debian/Ubuntu recommandés) avec sudo pour le script d'installation.
-- Python 3.9+, Python3-pip, Python3-venv
+- Python 3.9+, python3-pip, python3-venv, git
 - Postgresql (13, 15..)
 
 ## Installation rapide (script Bash)
