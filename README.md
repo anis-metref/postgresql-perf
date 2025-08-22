@@ -3,9 +3,15 @@
 Application streamlit (python) et scripts pour installer un environnement postgresql, charger des données, visualiser des statistiques et réaliser des benchmarks (pgbench).
 
 ## Présentation
-Ce projet propose:
+Ce dépôt propose:
 - une **application streamlit** de visualisation et d'expérimentation autour des **performances postgresql**,
-- un script Bash interactif pour installer/configurer postgresql (cluster dédié), restaurer des sauvegardes et lancer l'application.
+- un script bash interactif pour installer/configurer postgresql (cluster dédié), restaurer des sauvegardes et lancer l'application.
+
+## Structure du dépôt
+- **main.py**: application Streamlit
+- **setup_env.sh**: script d'installation/gestion avec menu
+- **sql/*.sql**: scripts SQL intégrés (structure, données)
+- **requirements.txt**: dépendances Python
 
 ## Fonctionnalités
 - **Tableau de bord**: métriques et graphiques (barres, lignes, aires), comparatif avec/sans index.
@@ -13,6 +19,7 @@ Ce projet propose:
 - **Charge (pgbench)**: exécution simple et campagnes multi-clients par profil (impact hardware/tuning), export CSV.
 - **Monitoring**: vues v_index_usage et v_table_stats pour suivre l'utilisation des index et la taille des tables.
 - **Chargement de données**: scripts intégrés pour structure minimale et jeux de données de différentes tailles.
+
 
 ## Prérequis
 - Linux (Debian/Ubuntu) avec sudo pour le script d'installation.
@@ -100,10 +107,4 @@ Onglet "**Tableau de bord**": section "Nettoyage des données":
     sudo pg_lsclusters
     sudo systemctl status postgresql@<version>-<cluster>
     ```
-
-## Structure du dépôt
-- main.py: application Streamlit
-- setup_env.sh: script d'installation/gestion avec menu
-- sql/*.sql: scripts SQL intégrés (structure, données)
-- requirements.txt: dépendances Python
 
