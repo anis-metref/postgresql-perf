@@ -7,8 +7,6 @@ Ce projet propose:
 - une application streamlit de visualisation et d'expérimentation autour des performances postgresql,
 - un script Bash interactif pour installer/configurer postgresql (cluster dédié), restaurer des sauvegardes et lancer l'application.
 
-Aucun emoji n'est utilisé dans les scripts ou l'application.
-
 ## Fonctionnalités
 - Tableau de bord: métriques et graphiques (barres, lignes, aires), comparatif avec/sans index.
 - Requêtes et index: exécution libre, création d'index utiles, mini-benchmarks avant/après index.
