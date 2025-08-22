@@ -4,15 +4,15 @@ Application streamlit (python) et scripts pour installer un environnement postgr
 
 ## Présentation
 Ce projet propose:
-- une application streamlit de visualisation et d'expérimentation autour des performances postgresql,
+- une **application streamlit** de visualisation et d'expérimentation autour des **performances postgresql**,
 - un script Bash interactif pour installer/configurer postgresql (cluster dédié), restaurer des sauvegardes et lancer l'application.
 
 ## Fonctionnalités
-- Tableau de bord: métriques et graphiques (barres, lignes, aires), comparatif avec/sans index.
-- Requêtes et index: exécution libre, création d'index utiles, mini-benchmarks avant/après index.
-- Charge (pgbench): exécution simple et campagnes multi-clients par profil (impact hardware/tuning), export CSV.
-- Monitoring: vues v_index_usage et v_table_stats pour suivre l'utilisation des index et la taille des tables.
-- Chargement de données: scripts intégrés pour structure minimale et jeux de données de différentes tailles.
+- **Tableau de bord**: métriques et graphiques (barres, lignes, aires), comparatif avec/sans index.
+- **Requêtes et index**: exécution libre, création d'index utiles, mini-benchmarks avant/après index.
+- **Charge (pgbench)**: exécution simple et campagnes multi-clients par profil (impact hardware/tuning), export CSV.
+- **Monitoring**: vues v_index_usage et v_table_stats pour suivre l'utilisation des index et la taille des tables.
+- **Chargement de données**: scripts intégrés pour structure minimale et jeux de données de différentes tailles.
 
 ## Prérequis
 - Linux (Debian/Ubuntu) avec sudo pour le script d'installation.
@@ -48,8 +48,8 @@ pip install -r requirements.txt
 streamlit run main.py
 ```
 
-Acceder depuis le navigateur : http://votreip:8501 
-Puis configurer la connexion postgresql dans la barre latérale de l'app.
+- Acceder depuis le navigateur : http://votreip:8501 
+- Puis configurer la connexion postgresql dans la barre latérale de l'app.
 
 ## Données sql
 Scripts intégrés (barre latérale de l'app):
@@ -61,10 +61,10 @@ Scripts intégrés (barre latérale de l'app):
 
 Conseil:
 - Commencez avec data_moyen.sql pour des démos rapides.
-- Utilisez la section "Nettoyage des données" (onglet Tableau de bord) pour vider les tables et recharger un autre jeu.
+- Utilisez la section "Nettoyage des données" (onglet Tableau de bord) pour vider les tables et recharger une autre data plus volumineuse "big_data.sql".
 
 ## Benchmarks et monitoring
-- Onglet "Requêtes et index":
+- Onglet "**Requêtes et index**":
   - Benchmarks avant/après index sur 2 requêtes typiques (égalité texte, lat/lon) avec tableau et graphes comparatifs.
 - Onglet "Charge (pgbench)":
   - Exécution simple: affiche la commande, la sortie, et alimente les graphes TPS/latence.
@@ -73,7 +73,7 @@ Conseil:
   - Visualisation des vues v_index_usage et v_table_stats.
 
 ## Nettoyage des données
-Onglet "Tableau de bord": section "Nettoyage des données":
+Onglet "**Tableau de bord**": section "Nettoyage des données":
 - Liste des tables visées (referentiels.adresse_postale, referentiels.etablissement, referentiels.unite_legale) et volumes actuels.
 - Bouton pour TRUNCATE ... RESTART IDENTITY sur ces tables, puis recharger un autre .sql.
 
