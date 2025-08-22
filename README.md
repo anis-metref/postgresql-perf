@@ -54,7 +54,7 @@ streamlit run main.py
 ## Données sql
 Scripts intégrés (barre latérale de l'app):
 - Structure minimale: /sql/bootstrap.sql
-- Données d'exemple: /sql/sample_data.sql
+- Données légère: /sql/light_data.sql
 - Données moyen volume (~50k): /sql/data_moyen.sql
 - Données conséquentes (~300k): /sql/data.sql
 - Vous pouvez aussi charger un script .sql personnalisé (uploader dans la barre latérale).
