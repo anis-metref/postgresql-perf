@@ -106,3 +106,163 @@ Onglet "Tableau de bord": section "Nettoyage des données":
 - setup_env.sh: script d'installation/gestion avec menu
 - sql/*.sql: scripts SQL intégrés (structure, données)
 - requirements.txt: dépendances Python
+
+
+<!-- Styles -->
+<style>
+.slider {
+  position: relative;
+  max-width: 900px;
+  margin: auto;
+  overflow: hidden;
+}
+
+.slides {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+.card {
+  flex: 0 0 100%;
+  background: #fcf7f7ff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.card img.img-full {
+  width: 100%;
+  display: block;
+}
+
+/* Description avec fond plus contrasté et ombre renforcée */
+.card .desc {
+  padding: 20px;
+  background: #eaeaea; /* gris cassé plus foncé */
+  font-family: "Segoe UI", sans-serif;
+  color: #141412ff;
+  text-align: center;
+  border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2); /* ombre plus visible */
+}
+
+.card .desc h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #131eafff;
+}
+
+.card .desc p {
+  font-size: 15px;
+  line-height: 1.5;
+  color: #2c2424ff;
+  margin: 0;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 28px;
+  color: white;
+  background: rgba(0, 0, 0, 0.4);
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 50%;
+  z-index: 10;
+}
+
+.arrow:hover {
+  background: rgba(22, 21, 21, 0.7);
+}
+
+.arrow.left {
+  left: 10px;
+}
+
+.arrow.right {
+  right: 10px;
+}
+
+.dots {
+  text-align: center;
+  margin-top: 12px;
+}
+
+.dot {
+  height: 12px;
+  width: 12px;
+  margin: 0 5px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.dot.active {
+  background-color: #24244dff;
+}
+</style>
+
+<!-- HTML -->
+<div class="slider">
+  <button class="arrow left" onclick="changeSlide(-1)">&#10094;</button>
+  <div class="slides" id="slides">
+    <div class="card">
+      <img src="screenshot.png" alt="Dashboard Apache2" class="img-full">
+      <div class="desc">
+        <h3>Analyse apache2</h3>
+        <p>Visualisation des accès et erreurs pour détecter les comportements suspects sur un serveur web</p>
+      </div>
+    </div>
+    <div class="card">
+      <img src="screenshot.png" alt="Dashboard Suricata" class="img-full">
+      <div class="desc">
+        <h3>Surveillance suricata</h3>
+        <p>Détection avancée des menaces réseau grâce à des règles ips/ids</p>
+      </div>
+    </div>
+    <div class="card">
+      <img src="/assets/elk/1-filebeat-system.png" alt="Dashboard Système" class="img-full">
+      <div class="desc">
+        <h3>Logs système</h3>
+        <p>Suivi en temps réel des événements système</p>
+      </div>
+    </div>
+  </div>
+  <button class="arrow right" onclick="changeSlide(1)">&#10095;</button>
+</div>
+
+<div class="dots" id="dots">
+  <span class="dot active" onclick="currentSlide(0)"></span>
+  <span class="dot" onclick="currentSlide(1)"></span>
+  <span class="dot" onclick="currentSlide(2)"></span>
+</div>
+
+<!-- JS -->
+<script>
+let index = 0;
+const slides = document.getElementById('slides');
+const dots = document.querySelectorAll('.dot');
+const total = dots.length;
+
+function showSlide(i) {
+  index = (i + total) % total;
+  slides.style.transform = 'translateX(' + (-index * 100) + '%)';
+  dots.forEach(dot => dot.classList.remove('active'));
+  dots[index].classList.add('active');
+}
+
+function changeSlide(step) {
+  showSlide(index + step);
+}
+
+function currentSlide(i) {
+  showSlide(i);
+}
+</script>
