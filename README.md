@@ -26,7 +26,7 @@ Ce dépôt propose:
 - Python 3.9+, python3-pip, python3-venv, git
 - Postgresql (13, 15..)
 
-## Installation rapide (script Bash)
+## Installation (script Bash)
 1.  Clonez ce dépôt en utilisant la commande suivante :
 ```
 git clone https://github.com/anis-metref/postgresql-perf.git
