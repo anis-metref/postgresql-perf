@@ -228,7 +228,7 @@ Onglet "Tableau de bord": section "Nettoyage des données":
       </div>
     </div>
     <div class="card">
-      <img src="/assets/elk/1-filebeat-system.png" alt="Dashboard Système" class="img-full">
+      <img src="screenshot.png"" alt="Dashboard Système" class="img-full">
       <div class="desc">
         <h3>Logs système</h3>
         <p>Suivi en temps réel des événements système</p>
