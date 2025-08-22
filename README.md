@@ -1,6 +1,6 @@
 # SQL - Base de données (Étude des performances de PostgreSQL)
 
-Application streamlit (python) et scripts pour installer un environnement postgresql d'étude, charger des jeux de données, visualiser des statistiques et réaliser des benchmarks (pgbench).
+Application streamlit (python) et scripts pour installer un environnement postgresql, charger des données, visualiser des statistiques et réaliser des benchmarks (pgbench).
 
 ## Présentation
 Ce projet propose:
