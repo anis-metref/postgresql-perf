@@ -51,7 +51,7 @@ streamlit run main.py
 Acceder depuis le navigateur : http://votreip:8501 
 Puis configurer la connexion postgresql dans la barre latérale de l'app.
 
-## Jeux de données
+## Données sql
 Scripts intégrés (barre latérale de l'app):
 - Structure minimale: /sql/bootstrap.sql
 - Données d'exemple: /sql/sample_data.sql
