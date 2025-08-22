@@ -1,5 +1,3 @@
-# SQL - Base de données (Étude des performances de PostgreSQL)
-
 ![elk](screenshot.png)
 
 Application streamlit (python) et scripts pour installer un environnement postgresql, charger des données, visualiser des statistiques et réaliser des benchmarks (pgbench).
