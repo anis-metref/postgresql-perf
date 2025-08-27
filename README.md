@@ -1,10 +1,9 @@
 ![elk](screenshot.png)
 
-Application streamlit (python) et scripts pour installer un environnement postgresql, charger des données, visualiser des statistiques et réaliser des benchmarks (pgbench).
 
 ## Présentation
 Ce dépôt propose:
-- une **application streamlit** de visualisation et d'expérimentation autour des **performances postgresql**,
+- une **application streamlit** que j'ai devloppé en python pour visualiser et d'expérimenter autour des **performances postgresql**,
 - un script bash interactif pour installer/configurer postgresql (cluster dédié), restaurer des sauvegardes et lancer l'application.
 
 ## Structure du dépôt
