@@ -3,7 +3,7 @@
 
 ## Présentation
 Ce dépôt propose:
-- une **application streamlit** que j'ai devloppé en python pour visualiser et d'expérimenter autour des **performances postgresql**,
+- une **application streamlit** que j'ai devloppé en python pour visualiser et d'expérimenter les **performances postgresql**,
 - un script bash interactif pour installer/configurer postgresql (cluster dédié), restaurer des sauvegardes et lancer l'application.
 
 ## Structure du dépôt
