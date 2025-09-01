@@ -17,7 +17,7 @@ Ce dépôt propose:
 - **Requêtes et index**: exécution libre, création d'index utiles, mini-benchmarks avant/après index.
 - **Charge (pgbench)**: exécution simple et campagnes multi-clients par profil (impact hardware/tuning), export CSV.
 - **Monitoring**: vues v_index_usage et v_table_stats pour suivre l'utilisation des index et la taille des tables.
-- **Chargement de données**: scripts intégrés pour structure minimale et jeux de données de différentes tailles.
+- **Chargement de données**: scripts intégrés pour structure minimale de données de différentes tailles.
 
 
 ## Prérequis
